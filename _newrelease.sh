@@ -5,6 +5,7 @@ set -x
 
 bumpversion minor
 
+git push
 git push --tags
 
 # # No testing that makes sense, currently. Maybe later.

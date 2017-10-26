@@ -1,0 +1,4 @@
+bumpversion
+pycodestyle
+wheel
+pylint
