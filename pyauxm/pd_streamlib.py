@@ -213,7 +213,7 @@ def nproject(df, *args, **kwargs):
             # unknown_excluded = exclude_fields - set(df.columns)
             res_columns = list(col for col in df.columns if col not in exclude_fields)
     else:
-        res_columns = args
+        res_columns = list(args)
 
     result = df[res_columns]  # supposed to make a shallow copy too
 
