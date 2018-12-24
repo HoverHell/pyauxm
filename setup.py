@@ -32,7 +32,7 @@ SETUP_KWARGS = dict(
     url="https://github.com/HoverHell/pyauxm",
     download_url="https://github.com/HoverHell/pyauxm/tarball/%s" % (__version__,),
     packages=find_packages(),
-    install_requires=["six"],
+    install_requires=["six", "pyaux"],
     extras_require={
         # All things that are known to be used in some part of this
         # library or another.

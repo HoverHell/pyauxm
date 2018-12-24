@@ -11,6 +11,7 @@ import functools
 import six
 import numpy as np
 import pandas as pd
+from pyaux.base import mangle_dict
 
 
 def _get_func_argnames(func):
@@ -78,19 +79,37 @@ def nmap(df, func, target=None, source=None, inplace=False, **apply_kwargs):
 
 
 _nfilter_extras = dict(
-    # name -> func(series, value): bool_series
-    {'in': lambda series, value: series.map(lambda cell: value in cell)},
-    isnull=lambda series, value: pd.isnull(series) if value else ~pd.isnull(series),  # pylint: disable=invalid-unary-operand-type
-    defined=lambda series, value: ~pd.isnull(series) if value else pd.isnull(series),  # pylint: disable=invalid-unary-operand-type
-    nonzero=lambda series, value: series.map(bool) if value else ~series.map(bool),
-    zero=lambda series, value: ~series.map(bool) if value else series.map(bool),
-    re=lambda series, value, **kwargs: series.map(lambda cell: bool(re.search(value, cell, **kwargs))),
-    startswith=lambda series, value: series.map(lambda cell: cell.startswith(value)),
-    endswith=lambda series, value: series.map(lambda cell: cell.endswith(value)),
-    gt=lambda series, value: series.map(lambda cell: cell > value),
-    gte=lambda series, value: series.map(lambda cell: cell >= value),
-    lt=lambda series, value: series.map(lambda cell: cell < value),
-    lte=lambda series, value: series.map(lambda cell: cell <= value),
+    # name -> func(series, value, **kwargs): bool_series
+    {'in': lambda series, value, **kwargs: series.map(lambda cell: value in cell)},
+    # pylint: disable=invalid-unary-operand-type
+    isnull=lambda series, value, **kwargs: pd.isnull(series) if value else ~pd.isnull(series),
+    # pylint: disable=invalid-unary-operand-type
+    defined=lambda series, value, **kwargs: ~pd.isnull(series) if value else pd.isnull(series),
+    nonzero=lambda series, value, **kwargs: series.map(bool) if value else ~series.map(bool),
+    zero=lambda series, value, **kwargs: ~series.map(bool) if value else series.map(bool),
+    re=lambda series, value, flags=0, **kwargs: series.map(lambda cell: bool(re.search(value, cell, flags=flags))),
+    re_m=lambda series, value, flags=0, **kwargs: series.map(lambda cell: bool(re.match(value, cell, flags=flags))),
+    startswith=lambda series, value, **kwargs: series.map(lambda cell: cell.startswith(value)),
+    endswith=lambda series, value, **kwargs: series.map(lambda cell: cell.endswith(value)),
+    # Call-based versions:
+    # TODO?: `, level=None, fill_value=None, axis=0`
+    ne=lambda series, value, **kwargs: series.ne(value, **mangle_dict(kwargs, include=('level', 'fill_value', 'axis'))),
+    gt=lambda series, value, **kwargs: series.gt(value, **mangle_dict(kwargs, include=('level', 'fill_value', 'axis'))),
+    ge=lambda series, value, **kwargs: series.ge(value, **mangle_dict(kwargs, include=('level', 'fill_value', 'axis'))),
+    gte=lambda series, value, **kwargs: series.ge(value, **mangle_dict(kwargs, include=('level', 'fill_value', 'axis'))),
+    lt=lambda series, value, **kwargs: series.lt(value, **mangle_dict(kwargs, include=('level', 'fill_value', 'axis'))),
+    le=lambda series, value, **kwargs: series.le(value, **mangle_dict(kwargs, include=('level', 'fill_value', 'axis'))),
+    lte=lambda series, value, **kwargs: series.le(value, **mangle_dict(kwargs, include=('level', 'fill_value', 'axis'))),
+    # Overrides-version:
+    gt_c=lambda series, value, **kwargs: series > value,
+    gte_c=lambda series, value, **kwargs: series >= value,
+    lt_c=lambda series, value, **kwargs: series < value,
+    lte_c=lambda series, value, **kwargs: series <= value,
+    # Per-cell versions:
+    gt_x=lambda series, value, **kwargs: series.map(lambda cell: cell > value),
+    gte_x=lambda series, value, **kwargs: series.map(lambda cell: cell >= value),
+    lt_x=lambda series, value, **kwargs: series.map(lambda cell: cell < value),
+    lte_x=lambda series, value, **kwargs: series.map(lambda cell: cell <= value),
     # ...
 )
 
