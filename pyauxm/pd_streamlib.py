@@ -80,7 +80,7 @@ def nmap(df, func, target=None, source=None, inplace=False, **apply_kwargs):
 
 _nfilter_extras = dict(
     # name -> func(series, value, **kwargs): bool_series
-    {'in': lambda series, value, **kwargs: series.map(lambda cell: value in cell)},
+    {'in': lambda series, value, **kwargs: series.map(lambda cell: cell in value)},
     # pylint: disable=invalid-unary-operand-type
     isnull=lambda series, value, **kwargs: pd.isnull(series) if value else ~pd.isnull(series),
     # pylint: disable=invalid-unary-operand-type
