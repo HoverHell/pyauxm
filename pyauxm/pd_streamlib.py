@@ -29,7 +29,11 @@ def _get_func_argnames(func):
 def _nmap_common(df, func, source=None, axis='columns', result_type='broadcast', **apply_kwargs):
     if source is None:
         source = _get_func_argnames(func)
-    pre_df = df[list(source)]
+    # `reset_index` hack should allow using the index (by name).
+    pre_df = df.reset_index()
+    pre_df.index = df.index
+    # ...
+    pre_df = pre_df[list(source)]
     return pre_df.apply(
         # TODO: experiment with the performance of this part.
         lambda row: func(**row.to_dict()),
