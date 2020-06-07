@@ -5,7 +5,7 @@ from __future__ import print_function, unicode_literals, absolute_import, divisi
 import os
 from setuptools import setup, find_packages
 
-__version__ = "1.4.0"
+__version__ = "1.5.0"
 
 DESCRIPTION = "Collection of helpers and useful things for Python: library-specific pieces"
 
