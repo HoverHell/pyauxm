@@ -33,6 +33,11 @@ SETUP_KWARGS = dict(
     download_url='https://gitlab.com/hoverhell/pyauxm/-/archive/{0}/pyauxm-{0}.tar.bz2'.format(__version__),
     packages=find_packages(),
     install_requires=["six", "pyaux"],
+    entry_points={
+        'console_scripts': [
+            "jsonbrowse = pyauxm.bin.jsonbrowse:main",
+        ],
+    },
     extras_require={
         # All things that are known to be used in some part of this
         # library or another.
@@ -47,6 +52,10 @@ SETUP_KWARGS = dict(
             "pp",
             "line_profiler",
             "pyzmq",
+            "urwid",
+        ],
+        "jsonbrowse": [
+            "urwid",
         ],
     },
 )
