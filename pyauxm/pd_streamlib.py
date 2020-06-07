@@ -276,6 +276,16 @@ def nsort(df, *args, **sort_values_kwargs):
     return df.loc(order_df.index)
 
 
+def nchunkify(df, chunk_size=10):
+    """
+    Split dataframe into chunks of at most `chunk_size` rows.
+
+    Similar to what `df.groupby(df.index // chunk_size)` does in simple cases.
+    """
+    for chunk_start in range(0, len(df), chunk_size):
+        yield df.iloc[chunk_start:chunk_start + chunk_size]
+
+
 def patch_all():
     pd.DataFrame.nmap_one = nmap_one
     pd.DataFrame.nmap = nmap
@@ -283,6 +293,7 @@ def patch_all():
     pd.DataFrame.nexclude = nexclude
     pd.DataFrame.nproject = nproject
     pd.DataFrame.nsort = nsort
+    pd.DataFrame.nchunkify = nchunkify
 
 
 def _examples():
